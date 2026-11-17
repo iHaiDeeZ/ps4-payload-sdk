@@ -482,6 +482,12 @@ int jailbreak() {
   if (is_jailbroken()) {
     return 0;
   }
+  // 14.02: PRISON_0/ROOTVNODE not resolved for this build; do NOT run the
+  // cred patch with unverified offsets (would corrupt the kernel). GoldHEN
+  // already launches payloads unsandboxed, so this is a safe no-op there.
+  if (get_firmware() == 1402) {
+    return 0;
+  }
   struct kpayload_firmware_info kpayload_firmware_info;
   kpayload_firmware_info.fw_version = get_firmware();
   return kexec(&kpayload_jailbreak, &kpayload_firmware_info);
